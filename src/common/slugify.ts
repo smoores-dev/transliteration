@@ -1,4 +1,5 @@
 import type { OptionsSlugify } from '../types';
+import type { Mapping } from './map';
 import {
   defaultOptions as defaultOptionsTransliterate,
   Transliterate,
@@ -39,21 +40,28 @@ export class Slugify extends Transliterate {
    * @param str
    * @param options
    */
-  slugify(str: string, options?: OptionsSlugify): string {
+  slugify(
+    str: string,
+    options?: OptionsSlugify
+  ): { result: string; mapping: Mapping } {
     const opts = typeof options === 'object' ? options : {};
     const opt: OptionsSlugify = deepClone({ ...this.options, ...opts });
 
     // remove leading and trailing separators
     const sep: string = opt.separator ? escapeRegExp(opt.separator) : '';
 
-    let slug: string = this.transliterate(str, opt);
+    const tr = this.transliterate(str, opt);
+    let slug = tr.result;
+    const mapping = tr.mapping;
 
-    slug = regexpReplaceCustom(
+    const result = regexpReplaceCustom(
       slug,
       new RegExp(`[^${opt.allowedChars}]+`, 'g'),
       opt.separator ?? '-',
       opt.ignore ?? []
     );
+    slug = result.result;
+    mapping.appendMapping(result.mapping);
     if (sep) {
       // Collapse consecutive separators into one
       slug = slug.replace(new RegExp(`${sep}+`, 'g'), opt.separator as string);
@@ -67,6 +75,6 @@ export class Slugify extends Transliterate {
     if (opt.uppercase) {
       slug = slug.toUpperCase();
     }
-    return slug;
+    return { result: slug, mapping };
   }
 }

@@ -6,6 +6,7 @@ import type {
   OptionReplaceObject,
   OptionsTransliterate,
 } from '../types';
+import { Mapping } from './map';
 
 import {
   deepClone,
@@ -152,8 +153,9 @@ export class Transliterate {
     source: string,
     searches: OptionReplaceArray,
     ignore: string[] = []
-  ): string {
+  ): { result: string; mapping: Mapping } {
     const clonedSearches = deepClone(searches);
+    const mapping = new Mapping();
     let result = source;
     for (const item of clonedSearches) {
       switch (true) {
@@ -169,9 +171,16 @@ export class Transliterate {
         default:
           item[0] = REDOS_SAFE_REGEX; // Prevent ReDos attack
       }
-      result = regexpReplaceCustom(result, item[0], item[1], ignore);
+      const replaceResult = regexpReplaceCustom(
+        result,
+        item[0],
+        item[1],
+        ignore
+      );
+      result = replaceResult.result;
+      mapping.appendMapping(replaceResult.mapping);
     }
-    return result;
+    return { result, mapping };
   }
 
   /**
@@ -205,13 +214,17 @@ export class Transliterate {
    * @param source The string which is being transliterated
    * @param options Options object
    */
-  transliterate(source: string, options?: OptionsTransliterate): string {
+  transliterate(
+    source: string,
+    options?: OptionsTransliterate
+  ): { result: string; mapping: Mapping } {
     const opts = typeof options === 'object' ? options : {};
     const opt: OptionsTransliterate = deepClone({
       ...this.options,
       ...opts,
     });
 
+    const mapping = new Mapping();
     // force convert to string
     let str = typeof source === 'string' ? source : String(source);
 
@@ -219,7 +232,9 @@ export class Transliterate {
       opt.replace as OptionReplaceCombined
     );
     if (replaceOption.length) {
-      str = this.replaceString(str, replaceOption, opt.ignore);
+      const result = this.replaceString(str, replaceOption, opt.ignore);
+      str = result.result;
+      mapping.appendMapping(result.mapping);
     }
 
     // ignore
@@ -238,8 +253,10 @@ export class Transliterate {
       opt.replaceAfter as OptionReplaceCombined
     );
     if (replaceAfterOption.length) {
-      str = this.replaceString(str, replaceAfterOption);
+      const result = this.replaceString(str, replaceAfterOption);
+      str = result.result;
+      mapping.appendMapping(result.mapping);
     }
-    return str;
+    return { result: str, mapping };
   }
 }

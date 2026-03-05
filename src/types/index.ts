@@ -1,4 +1,5 @@
 import type { Charmap } from '../../data/charmap';
+import type { Mapping } from '../common/map';
 
 export type OptionReplaceArrayItem = [string | RegExp, string];
 export type OptionReplaceArray = OptionReplaceArrayItem[];
@@ -76,7 +77,7 @@ export type Options = OptionsTransliterate | OptionsSlugify;
 export type IntervalArray = [number, number][];
 
 type TransliterationFunction<T> = {
-  (source: string, options?: T): string;
+  (source: string, options?: T): { result: string; mapping: Mapping };
   /**
    * Set default config
    * @param options

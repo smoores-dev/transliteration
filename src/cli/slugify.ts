@@ -40,7 +40,7 @@ if (argv.S || argv.stdin) {
   process.stdin.on('readable', () => {
     const chunk = process.stdin.read() as string;
     if (chunk !== null) {
-      process.stdout.write(slugify(chunk, options));
+      process.stdout.write(slugify(chunk, options).result);
     }
   });
   process.stdin.on('end', () => console.log(''));
@@ -48,5 +48,5 @@ if (argv.S || argv.stdin) {
   console.error("Invalid argument. Please type 'slugify --help' for help.");
   process.exit(1);
 } else {
-  console.log(slugify(String(argv._[0] ?? ''), options));
+  console.log(slugify(String(argv._[0] ?? ''), options).result);
 }

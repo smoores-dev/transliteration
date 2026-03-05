@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { charmap } from '../../data/charmap';
-import { transliterate as tr } from '../node';
+import { transliterate as baseTransliterate } from '../node';
 import type {
   OptionReplaceArray,
   OptionReplaceCombined,
@@ -16,6 +16,10 @@ import { defaultOptions, Transliterate } from './transliterate';
 const DIGITS_REGEX = /\d+/;
 const DIGIT_GLOBAL_REGEX = /\d/g;
 const WORLD_CASE_INSENSITIVE_REGEX = /world/i;
+
+function tr(...args: Parameters<typeof baseTransliterate>) {
+  return baseTransliterate(...args).result;
+}
 
 describe('transliterate()', () => {
   describe('Purity tests', () => {
@@ -287,27 +291,27 @@ describe('replaceStr()', () => {
       ['abbc', [[false as unknown as string, '']], 'abbc'],
     ];
     for (const [str, replace, result] of tests) {
-      expect(replaceString(str, replace)).toBe(result);
+      expect(replaceString(str, replace).result).toBe(result);
     }
   });
 });
 
 describe('transliterate.config()', () => {
   it('should read and reset config', () => {
-    tr.config(defaultOptions);
-    expect(tr.config()).toEqual(defaultOptions);
-    tr.config(undefined, true);
-    expect(tr.config()).toEqual({});
+    baseTransliterate.config(defaultOptions);
+    expect(baseTransliterate.config()).toEqual(defaultOptions);
+    baseTransliterate.config(undefined, true);
+    expect(baseTransliterate.config()).toEqual({});
   });
 });
 
 describe('transliterate.setData()', () => {
   it('should set and reset custom codemap', () => {
     const map = { a: 'A', b: 'B', c: 'C' };
-    tr.setData(map);
-    expect(tr.setData(map)).toEqual({ ...charmap, ...map });
+    baseTransliterate.setData(map);
+    expect(baseTransliterate.setData(map)).toEqual({ ...charmap, ...map });
     expect(tr('abc')).toBe('ABC');
-    expect(tr.setData(undefined, true)).toEqual(charmap);
+    expect(baseTransliterate.setData(undefined, true)).toEqual(charmap);
     expect(tr('abc')).toBe('abc');
   });
 
@@ -316,12 +320,12 @@ describe('transliterate.setData()', () => {
     const proto = { inherited: 'value' };
     const map = Object.create(proto) as { [key: string]: string };
     map.a = 'A';
-    tr.setData(undefined, true);
-    tr.setData(map);
+    baseTransliterate.setData(undefined, true);
+    baseTransliterate.setData(map);
     expect(tr('a')).toBe('A');
     // inherited property should not be added
     expect(tr('inherited')).toBe('inherited');
-    tr.setData(undefined, true);
+    baseTransliterate.setData(undefined, true);
   });
 });
 

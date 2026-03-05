@@ -151,7 +151,7 @@ describe('regexpReplaceCustom', () => {
         '$',
         '(',
         '##',
-      ])
+      ]).result
     ).toBe('abc-(-$-##-def');
 
     expect(
@@ -159,38 +159,42 @@ describe('regexpReplaceCustom', () => {
         '$',
         '(',
         '##',
-      ])
+      ]).result
     ).toBe('abc-$-def-jdj');
 
     expect(
       regexpReplaceCustom('abc!!!$!!!def!!jdj', /[^a-zA-Z0-9-_.~]+/g, '-', [])
+        .result
     ).toBe('abc-def-jdj');
 
     expect(
-      regexpReplaceCustom('abc$def', /[^a-zA-Z0-9-_.~]+/g, '-', ['$'])
+      regexpReplaceCustom('abc$def', /[^a-zA-Z0-9-_.~]+/g, '-', ['$']).result
     ).toBe('abc$def');
 
-    expect(regexpReplaceCustom('abc$def', /[^a-zA-Z0-9-_.~]+/g, '-')).toBe(
-      'abc-def'
-    );
+    expect(
+      regexpReplaceCustom('abc$def', /[^a-zA-Z0-9-_.~]+/g, '-').result
+    ).toBe('abc-def');
 
     // Test case where ignored pattern is at the end of matched string (covers line 186-189)
     expect(
-      regexpReplaceCustom('abc!!!$', /[^a-zA-Z0-9-_.~]+/g, '-', ['$'])
+      regexpReplaceCustom('abc!!!$', /[^a-zA-Z0-9-_.~]+/g, '-', ['$']).result
     ).toBe('abc-$');
 
     // Test case where ignored pattern consumes entire match
     expect(
       regexpReplaceCustom('abc$$$def', /[^a-zA-Z0-9-_.~]+/g, '-', ['$$$'])
+        .result
     ).toBe('abc$$$def');
 
     // Test case where ignoreLastIndex equals matchMain[0].length (covers line 186-189 false branch)
-    expect(regexpReplaceCustom('abc$def', /\$/g, '-', ['$'])).toBe('abc$def');
+    expect(regexpReplaceCustom('abc$def', /\$/g, '-', ['$']).result).toBe(
+      'abc$def'
+    );
 
     // Test case with multiple consecutive ignored patterns (covers line 185 false branch and line 188)
-    expect(regexpReplaceCustom('abc$$$def', /[^a-zA-Z0-9]+/g, '-', ['$'])).toBe(
-      'abc$$$def'
-    );
+    expect(
+      regexpReplaceCustom('abc$$$def', /[^a-zA-Z0-9]+/g, '-', ['$']).result
+    ).toBe('abc$$$def');
   });
 });
 

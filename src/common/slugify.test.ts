@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { slugify } from '../node';
+import { slugify as baseSlugify } from '../node';
 import type { OptionsSlugify } from '../types';
 import { defaultOptions } from './slugify';
+
+function slugify(...args: Parameters<typeof baseSlugify>) {
+  return baseSlugify(...args).result;
+}
 
 describe('slugify()', () => {
   it('should generate slugs correctly', () => {
@@ -79,16 +83,16 @@ describe('slugify()', () => {
 
 describe('slugify.config()', () => {
   it('should read current config', () => {
-    slugify.config(defaultOptions);
-    expect(slugify.config()).toEqual(defaultOptions);
-    slugify.config(undefined, true);
+    baseSlugify.config(defaultOptions);
+    expect(baseSlugify.config()).toEqual(defaultOptions);
+    baseSlugify.config(undefined, true);
   });
 
   it('should generate slugs with config', () => {
     const tests: [string, OptionsSlugify, string][] = [];
     for (const [str, options, slug] of tests) {
-      slugify.config(options);
-      expect(slugify(str)).toBe(slug);
+      baseSlugify.config(options);
+      expect(baseSlugify(str)).toBe(slug);
     }
   });
 });

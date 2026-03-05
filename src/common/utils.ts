@@ -1,4 +1,5 @@
 import type { IntervalArray } from '../types';
+import { Mapping, StepMap } from './map';
 
 const ESCAPE_REGEXP = /[-[\]/{}()*+?.\\^$|]/g;
 const CHINESE_REGEX =
@@ -161,6 +162,7 @@ export function regexpReplaceCustom(
   replacement: string,
   ignored: string[] = []
 ) {
+  const maps: StepMap[] = [];
   // RegExp version of ignored
   const ignoredRegexp = ignored.length
     ? new RegExp(ignored.map(escapeRegExp).join('|'), 'g')
@@ -191,10 +193,17 @@ export function regexpReplaceCustom(
       }
       result += source.substring(lastIndex, matchMain.index) + ignoreResult;
       lastIndex = rule.lastIndex;
+      maps.push(
+        new StepMap([
+          matchMain.index,
+          lastIndex - matchMain.index,
+          ignoreResult.length,
+        ])
+      );
     } else {
       result += source.substring(lastIndex, source.length);
       break;
     }
   }
-  return result;
+  return { result, mapping: new Mapping(maps) };
 }

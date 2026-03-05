@@ -11,15 +11,15 @@ import {
 
 describe('latin build', () => {
   it('transliterates Latin characters', () => {
-    expect(latinTransliterate('S\u00e3o Paulo')).toBe('Sao Paulo');
+    expect(latinTransliterate('S\u00e3o Paulo').result).toBe('Sao Paulo');
   });
 
   it('omits non-Latin characters', () => {
-    expect(latinTransliterate('\u4f60\u597d')).toBe('');
+    expect(latinTransliterate('\u4f60\u597d').result).toBe('');
   });
 
   it('slugifies Latin-only strings', () => {
-    expect(latinSlugify('S\u00e3o Paulo')).toBe('sao-paulo');
+    expect(latinSlugify('S\u00e3o Paulo').result).toBe('sao-paulo');
   });
 });
 
@@ -29,6 +29,6 @@ describe('browser latin exports', () => {
   });
 
   it('slugifies via browser build', () => {
-    expect(browserLatinSlugify('S\u00e3o Paulo')).toBe('sao-paulo');
+    expect(browserLatinSlugify('S\u00e3o Paulo').result).toBe('sao-paulo');
   });
 });
