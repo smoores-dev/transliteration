@@ -193,13 +193,15 @@ export function regexpReplaceCustom(
       }
       result += source.substring(lastIndex, matchMain.index) + ignoreResult;
       lastIndex = rule.lastIndex;
-      maps.push(
-        new StepMap([
-          matchMain.index,
-          lastIndex - matchMain.index,
-          ignoreResult.length,
-        ])
-      );
+      if (ignoreResult.length !== lastIndex - matchMain.index) {
+        maps.push(
+          new StepMap([
+            matchMain.index,
+            lastIndex - matchMain.index,
+            ignoreResult.length,
+          ])
+        );
+      }
     } else {
       result += source.substring(lastIndex, source.length);
       break;
