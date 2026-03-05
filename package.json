@@ -1,6 +1,6 @@
 {
   "name": "@storyteller-platform/transliteration",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Unicode to ASCII transliteration / slugify module for node.js, browser, Web Worker, ReactNative and CLI.",
   "main": "dist/node/src/node/index.js",
   "module": "dist/browser/bundle.esm.min.js",
@@ -45,7 +45,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yf-hk/transliteration.git"
+    "url": "https://github.com/smoores-dev/transliteration.git"
   },
   "keywords": [
     "transliterate",
@@ -60,7 +60,7 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yf-hk/transliteration/issues"
+    "url": "https://github.com/smoores-dev/transliteration/issues"
   },
   "engines": {
     "node": ">=20.0.0"

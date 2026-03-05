@@ -64,9 +64,21 @@ export class Slugify extends Transliterate {
     mapping.appendMapping(result.mapping);
     if (sep) {
       // Collapse consecutive separators into one
-      slug = slug.replace(new RegExp(`${sep}+`, 'g'), opt.separator as string);
+      const collapseResult = regexpReplaceCustom(
+        slug,
+        new RegExp(`${sep}+`, 'g'),
+        opt.separator as string
+      );
+      slug = collapseResult.result;
+      mapping.appendMapping(collapseResult.mapping);
       // Remove leading and trailing separators
-      slug = slug.replace(new RegExp(`^${sep}+|${sep}+$`, 'g'), '');
+      const trimResult = regexpReplaceCustom(
+        slug,
+        new RegExp(`^${sep}+|${sep}+$`, 'g'),
+        ''
+      );
+      slug = trimResult.result;
+      mapping.appendMapping(trimResult.mapping);
     }
 
     if (opt.lowercase) {
