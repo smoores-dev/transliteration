@@ -224,3 +224,14 @@ describe('slugify() real-world use cases', () => {
     expect(slugify('under_scores_here')).toBe('under_scores_here');
   });
 });
+
+describe('mapping', () => {
+  it('should map correctly', () => {
+    const input = 'a  b  cd';
+    const { mapping } = baseSlugify(input, {
+      allowedChars: 'a-zA-Z',
+    });
+
+    expect(mapping.map(6)).toBe(4);
+  });
+});

@@ -162,7 +162,7 @@ export function regexpReplaceCustom(
   replacement: string,
   ignored: string[] = []
 ) {
-  const maps: StepMap[] = [];
+  const mapping = new Mapping();
   // RegExp version of ignored
   const ignoredRegexp = ignored.length
     ? new RegExp(ignored.map(escapeRegExp).join('|'), 'g')
@@ -194,9 +194,9 @@ export function regexpReplaceCustom(
       result += source.substring(lastIndex, matchMain.index) + ignoreResult;
       lastIndex = rule.lastIndex;
       if (ignoreResult.length !== lastIndex - matchMain.index) {
-        maps.push(
+        mapping.appendMap(
           new StepMap([
-            matchMain.index,
+            mapping.map(matchMain.index),
             lastIndex - matchMain.index,
             ignoreResult.length,
           ])
@@ -207,5 +207,5 @@ export function regexpReplaceCustom(
       break;
     }
   }
-  return { result, mapping: new Mapping(maps) };
+  return { result, mapping };
 }
