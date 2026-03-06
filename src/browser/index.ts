@@ -17,4 +17,4 @@ slugify.config = s.config.bind(s);
 slugify.setData = s.setData.bind(s);
 
 // biome-ignore lint/performance/noBarrelFile: not a barrel
-export { Mapping } from '../common/map';
+export { Mapping, StepMap } from '../common/map';
