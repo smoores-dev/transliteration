@@ -226,8 +226,14 @@ describe('transliterate()', () => {
       expect(tr('שלום', { locale: new Intl.Locale('he') })).toBe('shlvm');
     });
 
-    it('should handle Hebrew characters with niquud', () => {
+    it('should handle Hebrew characters with niqqud', () => {
       expect(tr('שָׁלוֹם', { locale: new Intl.Locale('he') })).toBe('shalom');
+    });
+
+    it('should handle Arabic characters', () => {
+      expect(
+        tr('الجالس تحت شجرة البلوط', { locale: new Intl.Locale('ar') })
+      ).toBe('al-jal-s tḥt shjra al-blwṭ');
     });
   });
 

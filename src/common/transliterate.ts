@@ -1,4 +1,5 @@
 import { type Charmap, charmap } from '../../data/charmap';
+import { transliterate as arabicTransliterate } from '../arabic/transliterate';
 import { transliterate as hebTransliterate } from '../hebrew/transliterate';
 import type {
   IntervalArray,
@@ -76,6 +77,9 @@ export class Transliterate {
     switch (opt.locale.language) {
       case 'he': {
         return hebTransliterate(str);
+      }
+      case 'ar': {
+        return arabicTransliterate(str);
       }
       default: {
         return this.codeMapReplace(str, opt, ignoreRanges);
