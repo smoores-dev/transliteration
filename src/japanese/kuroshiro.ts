@@ -95,17 +95,23 @@ class Kuroshiro {
 
     let result = '';
 
-    for (const token of tokens) {
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
       const preToken = hasJapanese(token.surface_form)
         ? token.pronunciation || token.reading
         : token.surface_form;
       const romaji = toRawRomaji(preToken, ROMANIZATION_SYSTEM.HEPBURN);
-      if (token.surface_form.length !== romaji.length) {
+      const space = i === tokens.length - 1 ? '' : ' ';
+      if (token.surface_form.length !== romaji.length + space.length) {
         mapping.appendMap(
-          new StepMap([result.length, token.surface_form.length, romaji.length])
+          new StepMap([
+            result.length,
+            token.surface_form.length,
+            romaji.length + space.length,
+          ])
         );
       }
-      result += romaji + ' ';
+      result += romaji + space;
     }
     return { result: result.slice(0, -1), mapping };
   }

@@ -388,9 +388,20 @@ describe('mapping', () => {
     expect(mapping.map(input.length)).toBe(15);
   });
 
+  it('should produce a correct mapping for Japanese', async () => {
+    const input = 'オークの木の下に座っている';
+    const { mapping } = await baseTransliterate(input, {
+      locale: new Intl.Locale('jp'),
+    });
+    expect(mapping.map(0)).toBe(0);
+    expect(mapping.map(3)).toBe(4);
+    expect(mapping.map(4)).toBe(7);
+    expect(mapping.map(13)).toBe(31);
+  });
+
   it('should produce a correct mapping for surrogate pairs', async () => {
     const input = '\uD840\uDC00';
-    const mapping = (await baseTransliterate(input)).mapping;
+    const { mapping } = await baseTransliterate(input);
     expect(mapping.map(0)).toBe(0);
     expect(mapping.map(input.length)).toBe(0);
   });
