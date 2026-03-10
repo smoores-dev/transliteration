@@ -6,7 +6,7 @@ import type {
   OptionReplaceObject,
   OptionsTransliterate,
 } from '../types';
-import { Mapping } from './map';
+import { Mapping, StepMap } from './map';
 
 import {
   deepClone,
@@ -74,9 +74,10 @@ export class Transliterate {
     str: string,
     opt: OptionsTransliterate,
     ignoreRanges: IntervalArray = []
-  ): string {
+  ): { result: string; mapping: Mapping } {
     let index = 0;
     let result = '';
+    const mapping = new Mapping();
     const strContainsChinese = opt.fixChineseSpacing && hasChinese(str);
     let lastCharHasChinese = false;
     for (let i = 0; i < str.length; i++) {
@@ -116,11 +117,12 @@ export class Transliterate {
         lastCharHasChinese = !!s && hasChinese(char);
       }
       result += s;
+      mapping.appendMap(new StepMap([i, char.length, s.length]));
       index += char.length;
       // If it's UTF-32 then skip next character
       i += char.length - 1;
     }
-    return result;
+    return { result, mapping };
   }
 
   /**
@@ -242,7 +244,13 @@ export class Transliterate {
       opt.ignore && opt.ignore.length > 0
         ? findStrOccurrences(str, opt.ignore)
         : [];
-    str = this.codeMapReplace(str, opt, ignoreRanges);
+    const { result: codeMapResult, mapping: codeMapping } = this.codeMapReplace(
+      str,
+      opt,
+      ignoreRanges
+    );
+    str = codeMapResult;
+    mapping.appendMapping(codeMapping);
 
     // trim spaces at the beginning and ending of the string
     if (opt.trim) {

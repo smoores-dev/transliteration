@@ -355,3 +355,26 @@ describe('formatReplaceOption', () => {
     expect(formatReplaceOption(optObj)).toEqual([['own', 'ownValue']]);
   });
 });
+
+describe('mapping', () => {
+  it('should produce an empty mapping for latin script', () => {
+    const input = 'This is English';
+    const mapping = baseTransliterate(input).mapping;
+    expect(mapping.map(0)).toBe(0);
+    expect(mapping.map(input.length - 1)).toBe(input.length - 1);
+  });
+
+  it('should produce a correct mapping for non-latin script', () => {
+    const input = 'сидя под дубом';
+    const mapping = baseTransliterate(input).mapping;
+    expect(mapping.map(0)).toBe(0);
+    expect(mapping.map(input.length)).toBe(15);
+  });
+
+  it('should produce a correct mapping for surrogate pairs', () => {
+    const input = '\uD840\uDC00';
+    const mapping = baseTransliterate(input).mapping;
+    expect(mapping.map(0)).toBe(0);
+    expect(mapping.map(input.length)).toBe(0);
+  });
+});
