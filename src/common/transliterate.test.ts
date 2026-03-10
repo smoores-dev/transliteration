@@ -223,7 +223,11 @@ describe('transliterate()', () => {
     });
 
     it('should handle Hebrew characters', () => {
-      expect(tr('שלום')).toBe('shlvm');
+      expect(tr('שלום', { locale: new Intl.Locale('he') })).toBe('shlvm');
+    });
+
+    it('should handle Hebrew characters with niquud', () => {
+      expect(tr('שָׁלוֹם', { locale: new Intl.Locale('he') })).toBe('shalom');
     });
   });
 

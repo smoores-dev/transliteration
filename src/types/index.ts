@@ -41,6 +41,10 @@ export type OptionsTransliterate = {
    * @default true
    */
   fixChineseSpacing?: boolean;
+  /**
+   * The locale to interpret the text as
+   */
+  locale?: Intl.Locale;
 };
 
 export type OptionsSlugify = OptionsTransliterate & {

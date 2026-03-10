@@ -1,4 +1,5 @@
 import { type Charmap, charmap } from '../../data/charmap';
+import { transliterate as hebTransliterate } from '../hebrew/transliterate';
 import type {
   IntervalArray,
   OptionReplaceArray,
@@ -61,6 +62,25 @@ export class Transliterate {
       this.confOptions = deepClone(options);
     }
     return this.confOptions;
+  }
+
+  localeAwareReplace(
+    str: string,
+    opt: OptionsTransliterate,
+    ignoreRanges?: IntervalArray
+  ): { result: string; mapping: Mapping } {
+    if (!opt.locale) {
+      return this.codeMapReplace(str, opt, ignoreRanges);
+    }
+
+    switch (opt.locale.language) {
+      case 'he': {
+        return hebTransliterate(str);
+      }
+      default: {
+        return this.codeMapReplace(str, opt, ignoreRanges);
+      }
+    }
   }
 
   /**
@@ -244,11 +264,8 @@ export class Transliterate {
       opt.ignore && opt.ignore.length > 0
         ? findStrOccurrences(str, opt.ignore)
         : [];
-    const { result: codeMapResult, mapping: codeMapping } = this.codeMapReplace(
-      str,
-      opt,
-      ignoreRanges
-    );
+    const { result: codeMapResult, mapping: codeMapping } =
+      this.localeAwareReplace(str, opt, ignoreRanges);
     str = codeMapResult;
     mapping.appendMapping(codeMapping);
 

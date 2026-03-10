@@ -43,6 +43,9 @@ export function hasPunctuationOrSpace(char: string): boolean {
  * @returns The cloned object
  */
 export function deepClone<T>(obj: T): T {
+  if (obj instanceof Intl.Locale) {
+    return new Intl.Locale(obj) as T;
+  }
   if (Array.isArray(obj)) {
     return obj.map((item) => deepClone(item)) as T;
   }
