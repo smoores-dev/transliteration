@@ -40,17 +40,17 @@ export class Slugify extends Transliterate {
    * @param str
    * @param options
    */
-  slugify(
+  async slugify(
     str: string,
     options?: OptionsSlugify
-  ): { result: string; mapping: Mapping } {
+  ): Promise<{ result: string; mapping: Mapping }> {
     const opts = typeof options === 'object' ? options : {};
     const opt: OptionsSlugify = deepClone({ ...this.options, ...opts });
 
     // remove leading and trailing separators
     const sep: string = opt.separator ? escapeRegExp(opt.separator) : '';
 
-    const tr = this.transliterate(str, opt);
+    const tr = await this.transliterate(str, opt);
     let slug = tr.result;
     const mapping = tr.mapping;
 

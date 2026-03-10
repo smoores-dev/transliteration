@@ -17,26 +17,26 @@ const DIGITS_REGEX = /\d+/;
 const DIGIT_GLOBAL_REGEX = /\d/g;
 const WORLD_CASE_INSENSITIVE_REGEX = /world/i;
 
-function tr(...args: Parameters<typeof baseTransliterate>) {
-  return baseTransliterate(...args).result;
+async function tr(...args: Parameters<typeof baseTransliterate>) {
+  return (await baseTransliterate(...args)).result;
 }
 
 describe('transliterate()', () => {
   describe('Purity tests', () => {
-    it('should return ASCII characters unchanged', () => {
+    it('should return ASCII characters unchanged', async () => {
       const tests: string[] = [];
       for (let i = 1; tests.length < 127; i += 1) {
         tests.push(String.fromCharCode(i));
       }
 
       for (const str of tests) {
-        expect(tr(str)).toBe(str);
+        expect(await tr(str)).toBe(str);
       }
     });
   });
 
   describe('Basic string tests', () => {
-    it('should handle basic strings', () => {
+    it('should handle basic strings', async () => {
       const tests: (string | number)[] = [
         '',
         1 / 10,
@@ -47,13 +47,13 @@ describe('transliterate()', () => {
       ];
 
       for (const str of tests) {
-        expect(tr(str.toString())).toBe(str.toString());
+        expect(await tr(str.toString())).toBe(str.toString());
       }
     });
   });
 
   describe('Complex tests', () => {
-    it('should transliterate various scripts correctly', () => {
+    it('should transliterate various scripts correctly', async () => {
       const tests: [string, string][] = [
         ['Æneid', 'AEneid'],
         ['étude', 'etude'],
@@ -70,39 +70,39 @@ describe('transliterate()', () => {
       ];
 
       for (const [str, result] of tests) {
-        expect(tr(str)).toBe(result);
+        expect(await tr(str)).toBe(result);
       }
     });
   });
 
   describe('With ignore option', () => {
-    it('should ignore specified characters', () => {
+    it('should ignore specified characters', async () => {
       const tests: [string, string[], string][] = [
         ['Æneid', ['Æ'], 'Æneid'],
         ['你好，世界！', ['，', '！'], 'Ni Hao，Shi Jie！'],
         ['你好，世界！', ['你好', '！'], '你好,Shi Jie！'],
       ];
       for (const [str, ignore, result] of tests) {
-        expect(tr(str, { ignore })).toBe(result);
+        expect(await tr(str, { ignore })).toBe(result);
       }
     });
   });
 
   describe('With replace option', () => {
-    it('should replace specified strings', () => {
+    it('should replace specified strings', async () => {
       const tests: [string, OptionReplaceCombined, string][] = [
         ['你好，世界！', [['你好', 'Hola']], 'Hola,Shi Jie!'],
         ['你好，世界！', { 你好: 'Hola' }, 'Hola,Shi Jie!'],
         ['你好，世界!', { 好: 'Good' }, 'Ni Good,Shi Jie!'],
       ];
       for (const [str, replace, result] of tests) {
-        expect(tr(str, { replace })).toBe(result);
+        expect(await tr(str, { replace })).toBe(result);
       }
     });
 
-    it('should handle replace with ignore', () => {
+    it('should handle replace with ignore', async () => {
       expect(
-        tr('你好，世界！', {
+        await tr('你好，世界！', {
           replace: { 好: 'Good' },
           ignore: ['界'],
         })
@@ -111,21 +111,21 @@ describe('transliterate()', () => {
   });
 
   describe('With replaceAfter option', () => {
-    it('should replace after transliteration', () => {
+    it('should replace after transliteration', async () => {
       const tests: [string, OptionReplaceCombined, string][] = [
         ['你好，世界！', [['Ni Hao', 'Hola']], 'Hola,Shi Jie!'],
         ['你好，世界！', { 'Ni Hao': 'Hola' }, 'Hola,Shi Jie!'],
       ];
       for (const [str, replaceAfter, result] of tests) {
-        expect(tr(str, { replaceAfter })).toBe(result);
+        expect(await tr(str, { replaceAfter })).toBe(result);
       }
     });
   });
 
   describe('With replace / replaceAfter and ignore options', () => {
-    it('should handle combined options', () => {
+    it('should handle combined options', async () => {
       expect(
-        tr('你好, 世界!', {
+        await tr('你好, 世界!', {
           replace: [
             ['你好', 'Hola'],
             ['世界', 'mundo'],
@@ -135,140 +135,147 @@ describe('transliterate()', () => {
       ).toBe('Hola, mundo!');
 
       expect(
-        tr('你好，世界！', { replaceAfter: [['你', 'tú']], ignore: ['你'] })
+        await tr('你好，世界！', {
+          replaceAfter: [['你', 'tú']],
+          ignore: ['你'],
+        })
       ).toBe('tú Hao,Shi Jie!');
     });
   });
 
   describe('With trim option', () => {
-    it('should trim whitespace when enabled', () => {
-      expect(tr(' \t\r\n你好，世界！\t\r\n ', { trim: true })).toBe(
+    it('should trim whitespace when enabled', async () => {
+      expect(await tr(' \t\r\n你好，世界！\t\r\n ', { trim: true })).toBe(
         'Ni Hao,Shi Jie!'
       );
-      expect(tr(' \t\r\n你好，世界！\t\r\n ', { trim: false })).toBe(
+      expect(await tr(' \t\r\n你好，世界！\t\r\n ', { trim: false })).toBe(
         ' \t\r\nNi Hao,Shi Jie!\t\r\n '
       );
     });
   });
 
   describe('With unknown option', () => {
-    it('should use placeholder for unknown characters', () => {
-      expect(tr('🚀', { unknown: '?' })).toBe('?');
+    it('should use placeholder for unknown characters', async () => {
+      expect(await tr('🚀', { unknown: '?' })).toBe('?');
     });
   });
 
   describe('Edge cases', () => {
-    it('should handle empty strings', () => {
-      expect(tr('')).toBe('');
+    it('should handle empty strings', async () => {
+      expect(await tr('')).toBe('');
     });
 
-    it('should handle strings with only whitespace', () => {
-      expect(tr('   ')).toBe('   ');
-      expect(tr('\t\n\r')).toBe('\t\n\r');
+    it('should handle strings with only whitespace', async () => {
+      expect(await tr('   ')).toBe('   ');
+      expect(await tr('\t\n\r')).toBe('\t\n\r');
     });
 
-    it('should handle mixed scripts in single string', () => {
-      expect(tr('你好 Hello 世界')).toBe('Ni Hao Hello Shi Jie');
-      expect(tr('Café 北京 Tokyo')).toBe('Cafe Bei Jing Tokyo');
+    it('should handle mixed scripts in single string', async () => {
+      expect(await tr('你好 Hello 世界')).toBe('Ni Hao Hello Shi Jie');
+      expect(await tr('Café 北京 Tokyo')).toBe('Cafe Bei Jing Tokyo');
     });
 
-    it('should handle surrogate pairs (UTF-32 characters)', () => {
+    it('should handle surrogate pairs (UTF-32 characters)', async () => {
       // Mathematical bold capital A (U+1D400)
-      expect(tr('\uD835\uDC00')).toBe('');
+      expect(await tr('\uD835\uDC00')).toBe('');
       // CJK Extension B character
-      expect(tr('\uD840\uDC00')).toBe('');
+      expect(await tr('\uD840\uDC00')).toBe('');
     });
 
-    it('should handle very long strings', () => {
+    it('should handle very long strings', async () => {
       const longChinese = '你好'.repeat(100);
-      const result = tr(longChinese);
+      const result = await tr(longChinese);
       expect(result).toContain('Ni Hao');
       expect(result.length).toBeGreaterThan(0);
     });
 
-    it('should handle strings with numbers', () => {
-      expect(tr('你好123世界')).toBe('Ni Hao 123Shi Jie');
-      expect(tr('2024年')).toBe('2024Nian');
+    it('should handle strings with numbers', async () => {
+      expect(await tr('你好123世界')).toBe('Ni Hao 123Shi Jie');
+      expect(await tr('2024年')).toBe('2024Nian');
     });
 
-    it('should handle strings with special ASCII characters', () => {
-      expect(tr('Hello@World#2024!')).toBe('Hello@World#2024!');
-      expect(tr('你好@世界')).toBe('Ni Hao@Shi Jie');
+    it('should handle strings with special ASCII characters', async () => {
+      expect(await tr('Hello@World#2024!')).toBe('Hello@World#2024!');
+      expect(await tr('你好@世界')).toBe('Ni Hao@Shi Jie');
     });
 
-    it('should handle consecutive non-ASCII characters', () => {
-      expect(tr('éèêë')).toBe('eeee');
-      expect(tr('üöä')).toBe('uoa');
+    it('should handle consecutive non-ASCII characters', async () => {
+      expect(await tr('éèêë')).toBe('eeee');
+      expect(await tr('üöä')).toBe('uoa');
     });
 
-    it('should handle Korean characters', () => {
-      expect(tr('안녕하세요')).toBe('annyeonghaseyo');
+    it('should handle Korean characters', async () => {
+      expect(await tr('안녕하세요')).toBe('annyeonghaseyo');
     });
 
-    it('should handle Arabic characters', () => {
-      expect(tr('مرحبا')).toBe('mrHb');
+    it('should handle Arabic characters', async () => {
+      expect(await tr('مرحبا')).toBe('mrHb');
     });
 
-    it('should handle Russian/Cyrillic characters', () => {
-      expect(tr('Привет')).toBe('Privet');
-      expect(tr('Москва')).toBe('Moskva');
+    it('should handle Russian/Cyrillic characters', async () => {
+      expect(await tr('Привет')).toBe('Privet');
+      expect(await tr('Москва')).toBe('Moskva');
     });
 
-    it('should handle Greek characters', () => {
-      expect(tr('Αθήνα')).toBe('Athina');
+    it('should handle Greek characters', async () => {
+      expect(await tr('Αθήνα')).toBe('Athina');
     });
 
-    it('should handle Thai characters', () => {
-      expect(tr('สวัสดี')).toBe('swasdii');
+    it('should handle Thai characters', async () => {
+      expect(await tr('สวัสดี')).toBe('swasdii');
     });
 
-    it('should handle Hebrew characters', () => {
-      expect(tr('שלום', { locale: new Intl.Locale('he') })).toBe('shlvm');
+    it('should handle Hebrew characters', async () => {
+      expect(await tr('שלום', { locale: new Intl.Locale('he') })).toBe('shlvm');
     });
 
-    it('should handle Hebrew characters with niqqud', () => {
-      expect(tr('שָׁלוֹם', { locale: new Intl.Locale('he') })).toBe('shalom');
+    it('should handle Hebrew characters with niqqud', async () => {
+      expect(await tr('שָׁלוֹם', { locale: new Intl.Locale('he') })).toBe(
+        'shalom'
+      );
     });
 
-    it('should handle Arabic characters', () => {
+    it('should handle Japanese characters', async () => {
       expect(
-        tr('الجالس تحت شجرة البلوط', { locale: new Intl.Locale('ar') })
-      ).toBe('al-jal-s tḥt shjra al-blwṭ');
+        await tr('オークの木の下に座っている', {
+          locale: new Intl.Locale('jp'),
+        })
+      ).toBe('oku no konoshita ni suwatte iru');
     });
   });
 
   describe('Chinese spacing behavior', () => {
-    it('should add spaces between Chinese characters by default', () => {
-      expect(tr('你好')).toBe('Ni Hao');
-      expect(tr('北京市')).toBe('Bei Jing Shi');
+    it('should add spaces between Chinese characters by default', async () => {
+      expect(await tr('你好')).toBe('Ni Hao');
+      expect(await tr('北京市')).toBe('Bei Jing Shi');
     });
 
-    it('should not add extra spaces around punctuation', () => {
-      expect(tr('你好，世界')).toBe('Ni Hao,Shi Jie');
+    it('should not add extra spaces around punctuation', async () => {
+      expect(await tr('你好，世界')).toBe('Ni Hao,Shi Jie');
     });
 
-    it('should handle fixChineseSpacing option', () => {
-      expect(tr('你好', { fixChineseSpacing: false })).toBe('NiHao');
-      expect(tr('你好', { fixChineseSpacing: true })).toBe('Ni Hao');
+    it('should handle fixChineseSpacing option', async () => {
+      expect(await tr('你好', { fixChineseSpacing: false })).toBe('NiHao');
+      expect(await tr('你好', { fixChineseSpacing: true })).toBe('Ni Hao');
     });
   });
 
   describe('Replace with regex', () => {
-    it('should handle regex patterns in replace option', () => {
-      expect(tr('test123test', { replace: [[DIGITS_REGEX, 'NUM']] })).toBe(
-        'testNUMtest'
-      );
+    it('should handle regex patterns in replace option', async () => {
+      expect(
+        await tr('test123test', { replace: [[DIGITS_REGEX, 'NUM']] })
+      ).toBe('testNUMtest');
     });
 
-    it('should handle global regex patterns', () => {
-      expect(tr('a1b2c3', { replace: [[DIGIT_GLOBAL_REGEX, 'X']] })).toBe(
+    it('should handle global regex patterns', async () => {
+      expect(await tr('a1b2c3', { replace: [[DIGIT_GLOBAL_REGEX, 'X']] })).toBe(
         'aXbXcX'
       );
     });
 
-    it('should handle regex with flags', () => {
+    it('should handle regex with flags', async () => {
       expect(
-        tr('Hello WORLD', {
+        await tr('Hello WORLD', {
           replace: [[WORLD_CASE_INSENSITIVE_REGEX, 'Earth']],
         })
       ).toBe('Hello Earth');
@@ -276,16 +283,16 @@ describe('transliterate()', () => {
   });
 
   describe('With non-string source', () => {
-    it('should convert non-string source to string', () => {
+    it('should convert non-string source to string', async () => {
       // Covers line 214 - force convert to string
-      expect(tr(123 as unknown as string)).toBe('123');
-      expect(tr(null as unknown as string)).toBe('null');
-      expect(tr(undefined as unknown as string)).toBe('undefined');
+      expect(await tr(123 as unknown as string)).toBe('123');
+      expect(await tr(null as unknown as string)).toBe('null');
+      expect(await tr(undefined as unknown as string)).toBe('undefined');
     });
   });
 });
 
-describe('replaceStr()', () => {
+describe('replaceSawait tr()', () => {
   it('should replace strings correctly', () => {
     const transliterate = new Transliterate();
     const replaceString = transliterate.replaceString.bind(transliterate);
@@ -316,25 +323,25 @@ describe('transliterate.config()', () => {
 });
 
 describe('transliterate.setData()', () => {
-  it('should set and reset custom codemap', () => {
+  it('should set and reset custom codemap', async () => {
     const map = { a: 'A', b: 'B', c: 'C' };
     baseTransliterate.setData(map);
     expect(baseTransliterate.setData(map)).toEqual({ ...charmap, ...map });
-    expect(tr('abc')).toBe('ABC');
+    expect(await tr('abc')).toBe('ABC');
     expect(baseTransliterate.setData(undefined, true)).toEqual(charmap);
-    expect(tr('abc')).toBe('abc');
+    expect(await tr('abc')).toBe('abc');
   });
 
-  it('should only include own properties from data', () => {
+  it('should only include own properties from data', async () => {
     // Create object with inherited property to cover Object.hasOwn branch
     const proto = { inherited: 'value' };
     const map = Object.create(proto) as { [key: string]: string };
     map.a = 'A';
     baseTransliterate.setData(undefined, true);
     baseTransliterate.setData(map);
-    expect(tr('a')).toBe('A');
+    expect(await tr('a')).toBe('A');
     // inherited property should not be added
-    expect(tr('inherited')).toBe('inherited');
+    expect(await tr('inherited')).toBe('inherited');
     baseTransliterate.setData(undefined, true);
   });
 });
@@ -367,23 +374,23 @@ describe('formatReplaceOption', () => {
 });
 
 describe('mapping', () => {
-  it('should produce an empty mapping for latin script', () => {
+  it('should produce an empty mapping for latin script', async () => {
     const input = 'This is English';
-    const mapping = baseTransliterate(input).mapping;
+    const mapping = (await baseTransliterate(input)).mapping;
     expect(mapping.map(0)).toBe(0);
     expect(mapping.map(input.length - 1)).toBe(input.length - 1);
   });
 
-  it('should produce a correct mapping for non-latin script', () => {
+  it('should produce a correct mapping for non-latin script', async () => {
     const input = 'сидя под дубом';
-    const mapping = baseTransliterate(input).mapping;
+    const mapping = (await baseTransliterate(input)).mapping;
     expect(mapping.map(0)).toBe(0);
     expect(mapping.map(input.length)).toBe(15);
   });
 
-  it('should produce a correct mapping for surrogate pairs', () => {
+  it('should produce a correct mapping for surrogate pairs', async () => {
     const input = '\uD840\uDC00';
-    const mapping = baseTransliterate(input).mapping;
+    const mapping = (await baseTransliterate(input)).mapping;
     expect(mapping.map(0)).toBe(0);
     expect(mapping.map(input.length)).toBe(0);
   });

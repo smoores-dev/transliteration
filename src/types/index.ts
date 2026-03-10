@@ -81,7 +81,7 @@ export type Options = OptionsTransliterate | OptionsSlugify;
 export type IntervalArray = [number, number][];
 
 type TransliterationFunction<T> = {
-  (source: string, options?: T): { result: string; mapping: Mapping };
+  (source: string, options?: T): Promise<{ result: string; mapping: Mapping }>;
   /**
    * Set default config
    * @param options

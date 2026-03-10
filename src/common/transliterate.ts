@@ -1,6 +1,6 @@
 import { type Charmap, charmap } from '../../data/charmap';
-import { transliterate as arabicTransliterate } from '../arabic/transliterate';
 import { transliterate as hebTransliterate } from '../hebrew/transliterate';
+import { transliterate as jpTransliterate } from '../japanese/transliterate';
 import type {
   IntervalArray,
   OptionReplaceArray,
@@ -65,11 +65,11 @@ export class Transliterate {
     return this.confOptions;
   }
 
-  localeAwareReplace(
+  async localeAwareReplace(
     str: string,
     opt: OptionsTransliterate,
     ignoreRanges?: IntervalArray
-  ): { result: string; mapping: Mapping } {
+  ): Promise<{ result: string; mapping: Mapping }> {
     if (!opt.locale) {
       return this.codeMapReplace(str, opt, ignoreRanges);
     }
@@ -78,8 +78,8 @@ export class Transliterate {
       case 'he': {
         return hebTransliterate(str);
       }
-      case 'ar': {
-        return arabicTransliterate(str);
+      case 'jp': {
+        return await jpTransliterate(str);
       }
       default: {
         return this.codeMapReplace(str, opt, ignoreRanges);
@@ -240,10 +240,10 @@ export class Transliterate {
    * @param source The string which is being transliterated
    * @param options Options object
    */
-  transliterate(
+  async transliterate(
     source: string,
     options?: OptionsTransliterate
-  ): { result: string; mapping: Mapping } {
+  ): Promise<{ result: string; mapping: Mapping }> {
     const opts = typeof options === 'object' ? options : {};
     const opt: OptionsTransliterate = deepClone({
       ...this.options,
@@ -269,7 +269,7 @@ export class Transliterate {
         ? findStrOccurrences(str, opt.ignore)
         : [];
     const { result: codeMapResult, mapping: codeMapping } =
-      this.localeAwareReplace(str, opt, ignoreRanges);
+      await this.localeAwareReplace(str, opt, ignoreRanges);
     str = codeMapResult;
     mapping.appendMapping(codeMapping);
 
