@@ -430,7 +430,6 @@ describe('mapping', () => {
     const { mapping } = await baseTransliterate(input, {
       locale: new Intl.Locale('zh-CN'),
     });
-    console.log(mapping.maps);
     expect(mapping.map(0)).toBe(0);
     expect(mapping.map(2)).toBe(8);
     expect(mapping.map(3)).toBe(12);

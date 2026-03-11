@@ -10,16 +10,18 @@ import {
 } from './latin';
 
 describe('latin build', () => {
-  it('transliterates Latin characters', () => {
-    expect(latinTransliterate('S\u00e3o Paulo').result).toBe('Sao Paulo');
+  it('transliterates Latin characters', async () => {
+    expect((await latinTransliterate('S\u00e3o Paulo')).result).toBe(
+      'Sao Paulo'
+    );
   });
 
-  it('omits non-Latin characters', () => {
-    expect(latinTransliterate('\u4f60\u597d').result).toBe('');
+  it('omits non-Latin characters', async () => {
+    expect((await latinTransliterate('\u4f60\u597d')).result).toBe('');
   });
 
-  it('slugifies Latin-only strings', () => {
-    expect(latinSlugify('S\u00e3o Paulo').result).toBe('sao-paulo');
+  it('slugifies Latin-only strings', async () => {
+    expect((await latinSlugify('S\u00e3o Paulo')).result).toBe('sao-paulo');
   });
 });
 
@@ -28,7 +30,9 @@ describe('browser latin exports', () => {
     expect(browserLatinTransl).toBe(browserLatinTransliterate);
   });
 
-  it('slugifies via browser build', () => {
-    expect(browserLatinSlugify('S\u00e3o Paulo').result).toBe('sao-paulo');
+  it('slugifies via browser build', async () => {
+    expect((await browserLatinSlugify('S\u00e3o Paulo')).result).toBe(
+      'sao-paulo'
+    );
   });
 });

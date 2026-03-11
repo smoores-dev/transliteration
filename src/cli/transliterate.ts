@@ -39,7 +39,7 @@ if (argv.S || argv.stdin) {
   process.stdin.on('readable', () => {
     const chunk = process.stdin.read() as string;
     if (chunk !== null) {
-      process.stdout.write(tr(chunk, options).result);
+      tr(chunk, options).then(({ result }) => process.stdout.write(result));
     }
   });
   process.stdin.on('end', () => console.log(''));
@@ -49,5 +49,7 @@ if (argv.S || argv.stdin) {
   );
   process.exit(1);
 } else {
-  console.log(tr(String(argv._[0] ?? ''), options).result);
+  tr(String(argv._[0] ?? ''), options).then(({ result }) =>
+    console.log(result)
+  );
 }
