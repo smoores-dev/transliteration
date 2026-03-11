@@ -1,10 +1,13 @@
 import type { Charmap } from '../../data/charmap';
 import type { Mapping } from '../common/map';
 
-export type OptionReplaceArrayItem = [string | RegExp, string];
+export type OptionReplaceArrayItem = [
+  string | RegExp,
+  string | ((match: RegExpExecArray) => string),
+];
 export type OptionReplaceArray = OptionReplaceArrayItem[];
 export type OptionReplaceObject = {
-  [from: string]: string;
+  [from: string]: string | ((match: RegExpExecArray) => string);
 };
 export type OptionReplaceCombined = OptionReplaceArray | OptionReplaceObject;
 

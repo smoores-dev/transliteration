@@ -162,9 +162,11 @@ export function inRange(num: number, rangeArr: IntervalArray): boolean {
 export function regexpReplaceCustom(
   source: string,
   regexp: RegExp,
-  replacement: string,
+  replacement: string | ((match: RegExpExecArray) => string),
   ignored: string[] = []
 ) {
+  const replace =
+    typeof replacement === 'function' ? replacement : () => replacement;
   const mapping = new Mapping();
   // RegExp version of ignored
   const ignoredRegexp = ignored.length
@@ -185,12 +187,12 @@ export function regexpReplaceCustom(
         const matchIgnore = ignoredRegexp?.exec(matchMain[0]);
         if (matchIgnore && ignoredRegexp) {
           ignoreResult +=
-            matchIgnore.index > ignoreLastIndex ? replacement : '';
+            matchIgnore.index > ignoreLastIndex ? replace(matchMain) : '';
           ignoreResult += matchIgnore[0];
           ignoreLastIndex = ignoredRegexp.lastIndex;
         } else {
           ignoreResult +=
-            matchMain[0].length > ignoreLastIndex ? replacement : '';
+            matchMain[0].length > ignoreLastIndex ? replace(matchMain) : '';
           break;
         }
       }

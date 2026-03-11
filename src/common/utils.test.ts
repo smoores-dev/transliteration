@@ -196,6 +196,14 @@ describe('regexpReplaceCustom', () => {
       regexpReplaceCustom('abc$$$def', /[^a-zA-Z0-9]+/g, '-', ['$']).result
     ).toBe('abc$$$def');
   });
+
+  it('should support replacement functions', () => {
+    expect(
+      regexpReplaceCustom('abc 123 456 def', /[0-9]+/g, (match) =>
+        match[0] === '123' ? 'one two three' : 'four five six'
+      ).result
+    ).toBe('abc one two three four five six def');
+  });
 });
 
 describe('deepClone', () => {
