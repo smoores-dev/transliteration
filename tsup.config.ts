@@ -16,53 +16,7 @@ export const nodeConfig: Options = {
   outDir: 'dist',
   outExtension: () => ({ js: '.js' }),
   ...common,
+  platform: 'node',
 };
 
-export const browserEsmConfig: Options = {
-  entry: {
-    'browser/bundle.esm.min': 'src/browser/index.ts',
-    'browser/latin.esm.min': 'src/browser/latin.ts',
-  },
-  format: ['esm'],
-  dts: false,
-  sourcemap: true,
-  platform: 'browser',
-  outDir: 'dist',
-  outExtension: () => ({ js: '.js' }),
-  ...common,
-};
-
-export const browserUmdConfig: Options = {
-  entry: {
-    'browser/bundle.umd.min': 'src/browser/index.ts',
-    'browser/latin.umd.min': 'src/browser/latin.ts',
-  },
-  format: ['iife'],
-  dts: false,
-  sourcemap: true,
-  platform: 'browser',
-  outDir: 'dist',
-  outExtension: () => ({ js: '.js' }),
-  globalName: 'transliteration',
-  ...common,
-};
-
-export const cliConfig: Options = {
-  entry: {
-    'bin/transliterate': 'src/cli/transliterate.ts',
-    'bin/slugify': 'src/cli/slugify.ts',
-  },
-  format: ['cjs'],
-  sourcemap: false,
-  banner: { js: '#!/usr/bin/env node' },
-  outDir: 'dist',
-  outExtension: () => ({ js: '.js' }),
-  ...common,
-};
-
-export default defineConfig([
-  nodeConfig,
-  browserEsmConfig,
-  browserUmdConfig,
-  cliConfig,
-]);
+export default defineConfig([nodeConfig]);
