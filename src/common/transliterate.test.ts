@@ -242,6 +242,32 @@ describe('transliterate()', () => {
         })
       ).toBe('oku no konoshita ni suwatte iru');
     });
+
+    it('should handle Chinese characters', async () => {
+      expect(
+        await tr('很多人看了，都说他们做得很好。', {
+          locale: new Intl.Locale('zh-CN'),
+        })
+      ).toBe('hen duo ren kan le， du shuo ta men zuo de hen hao。');
+    });
+
+    it('should handle Chinese with multiple pin yin heteronyms', async () => {
+      expect(
+        await tr('音乐老师说快乐的人更容易学音乐。', {
+          locale: new Intl.Locale('zh-CN'),
+        })
+      ).toBe('yin yue lao shi shuo kuai le de ren geng rong yi xue yin yue。');
+    });
+
+    it('should handle more Chinese with multiple pin yin heteronyms', async () => {
+      expect(
+        await tr('他小时候在上海长大，现在头发很长。', {
+          locale: new Intl.Locale('zh-CN'),
+        })
+      ).toBe(
+        'ta xiao shi hou zai shang hai zhang da， xian zai tou fa hen chang。'
+      );
+    });
   });
 
   describe('Chinese spacing behavior', () => {
@@ -397,6 +423,18 @@ describe('mapping', () => {
     expect(mapping.map(3)).toBe(4);
     expect(mapping.map(4)).toBe(7);
     expect(mapping.map(13)).toBe(31);
+  });
+
+  it('should produce a correct mapping for Chinese', async () => {
+    const input = '很多人看了，都说他们做得很好。';
+    const { mapping } = await baseTransliterate(input, {
+      locale: new Intl.Locale('zh-CN'),
+    });
+    console.log(mapping.maps);
+    expect(mapping.map(0)).toBe(0);
+    expect(mapping.map(2)).toBe(8);
+    expect(mapping.map(3)).toBe(12);
+    expect(mapping.map(15)).toBe(50);
   });
 
   it('should produce a correct mapping for surrogate pairs', async () => {

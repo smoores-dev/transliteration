@@ -113,7 +113,7 @@ class Kuroshiro {
       }
       result += romaji + space;
     }
-    return { result: result.slice(0, -1), mapping };
+    return { result, mapping };
   }
 
   static Util = {

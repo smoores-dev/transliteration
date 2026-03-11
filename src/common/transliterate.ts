@@ -1,4 +1,5 @@
 import { type Charmap, charmap } from '../../data/charmap';
+import { transliterate as zhTransliterate } from '../chinese/transliterate';
 import { transliterate as hebTransliterate } from '../hebrew/transliterate';
 import { transliterate as jpTransliterate } from '../japanese/transliterate';
 import type {
@@ -80,6 +81,9 @@ export class Transliterate {
       }
       case 'jp': {
         return await jpTransliterate(str);
+      }
+      case 'zh': {
+        return zhTransliterate(str);
       }
       default: {
         return this.codeMapReplace(str, opt, ignoreRanges);
