@@ -238,9 +238,17 @@ describe('transliterate()', () => {
     it('should handle Japanese characters', async () => {
       expect(
         await tr('オークの木の下に座っている', {
-          locale: new Intl.Locale('jp'),
+          locale: new Intl.Locale('ja'),
         })
       ).toBe('oku no konoshita ni suwatte iru');
+    });
+
+    it('should transliterate Japanese and Kanji the same', async () => {
+      console.log(await tr('街', { locale: new Intl.Locale('ja') }));
+      console.log(await tr('まち', { locale: new Intl.Locale('ja') }));
+      expect(await tr('街', { locale: new Intl.Locale('ja') })).toBe(
+        await tr('まち', { locale: new Intl.Locale('ja') })
+      );
     });
 
     it('should handle Chinese characters', async () => {
@@ -417,7 +425,7 @@ describe('mapping', () => {
   it('should produce a correct mapping for Japanese', async () => {
     const input = 'オークの木の下に座っている';
     const { mapping } = await baseTransliterate(input, {
-      locale: new Intl.Locale('jp'),
+      locale: new Intl.Locale('ja'),
     });
     expect(mapping.map(0)).toBe(0);
     expect(mapping.map(3)).toBe(4);

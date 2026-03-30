@@ -1,6 +1,6 @@
 {
   "name": "@storyteller-platform/transliteration",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Unicode to ASCII transliteration / slugify module for node.js, browser, Web Worker, ReactNative and CLI.",
   "main": "dist/node/src/node/index.js",
   "module": "dist/browser/bundle.esm.min.js",

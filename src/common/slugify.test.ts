@@ -233,7 +233,7 @@ describe('await slugify() real-world use cases', () => {
   it('should handle Japanese characters', async () => {
     expect(
       await slugify('オークの木の下に座っている', {
-        locale: new Intl.Locale('jp'),
+        locale: new Intl.Locale('ja'),
       })
     ).toBe('oku-no-konoshita-ni-suwatte-iru');
   });

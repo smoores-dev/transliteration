@@ -79,7 +79,7 @@ export class Transliterate {
       case 'he': {
         return hebTransliterate(str);
       }
-      case 'jp': {
+      case 'ja': {
         return await jpTransliterate(str);
       }
       case 'zh': {
