@@ -411,6 +411,7 @@ describe('mapping', () => {
   it('should produce an empty mapping for latin script', async () => {
     const input = 'This is English';
     const mapping = (await baseTransliterate(input)).mapping;
+    expect(mapping.maps).toHaveLength(0);
     expect(mapping.map(0)).toBe(0);
     expect(mapping.map(input.length - 1)).toBe(input.length - 1);
   });

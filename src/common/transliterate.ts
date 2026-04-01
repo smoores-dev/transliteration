@@ -145,7 +145,9 @@ export class Transliterate {
         lastCharHasChinese = !!s && hasChinese(char);
       }
       result += s;
-      mapping.appendMap(new StepMap([i, char.length, s.length]));
+      if (char.length !== s.length) {
+        mapping.appendMap(new StepMap([i, char.length, s.length]));
+      }
       index += char.length;
       // If it's UTF-32 then skip next character
       i += char.length - 1;
