@@ -114,32 +114,14 @@ export default class Pinyin {
     const mapping = new Mapping();
     const phrases = this.segment(hans);
     let result = '';
-    let nohans = '';
     for (let i = 0, l = phrases.length; i < l; i++) {
       const words = phrases[i];
+      // A trailing space separates this segment from the next word-like one.
       const space = phrases[i + 1]?.isWordLike ? ' ' : '';
 
-      if (!words.isWordLike) {
-        if (space.length) {
-          mapping.insertMap(
-            words.index,
-            words.segment.length,
-            words.segment.length + space.length
-          );
-        }
-        result += words.segment + space;
-        continue;
-      }
+      const firstCharCode = words.isWordLike ? words.segment.charCodeAt(0) : 0;
 
-      const firstCharCode = words.segment.charCodeAt(0);
-
-      if (DICT_ZI[firstCharCode]) {
-        // ends of non-chinese words.
-        if (nohans.length > 0) {
-          result += nohans + space;
-          nohans = ''; // reset non-chinese words.
-        }
-
+      if (words.isWordLike && DICT_ZI[firstCharCode]) {
         const newPys =
           words.segment.length === 1
             ? this.normal_pinyin(words.segment, options)
@@ -155,13 +137,13 @@ export default class Pinyin {
         continue;
       }
 
-      nohans += words.segment;
+      const out = words.segment + space;
+      if (space.length) {
+        mapping.insertMap(words.index, words.segment.length, out.length);
+      }
+      result += out;
     }
 
-    // 清理最后的非中文字符串。
-    if (nohans.length > 0) {
-      result += nohans;
-    }
     return { result, mapping };
   }
 
