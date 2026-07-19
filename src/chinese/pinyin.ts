@@ -155,7 +155,7 @@ export default class Pinyin {
         continue;
       }
 
-      nohans += words;
+      nohans += words.segment;
     }
 
     // 清理最后的非中文字符串。
