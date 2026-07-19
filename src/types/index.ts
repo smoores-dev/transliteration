@@ -1,5 +1,5 @@
+import type { Mapping } from '@storyteller-platform/mapping';
 import type { Charmap } from '../../data/charmap';
-import type { Mapping } from '../common/map';
 
 export type OptionReplaceArrayItem = [
   string | RegExp,

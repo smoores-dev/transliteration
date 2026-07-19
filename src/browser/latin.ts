@@ -16,6 +16,3 @@ const s = new Slugify({}, latinCharmap);
 export const slugify: SlugifyFunction = s.slugify.bind(s) as SlugifyFunction;
 slugify.config = s.config.bind(s);
 slugify.setData = s.setData.bind(s);
-
-// biome-ignore lint/performance/noBarrelFile: not a barrel
-export { Mapping, StepMap } from '../common/map';

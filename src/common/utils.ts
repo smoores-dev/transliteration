@@ -1,5 +1,5 @@
+import { Mapping } from '@storyteller-platform/mapping';
 import type { IntervalArray } from '../types';
-import { Mapping, StepMap } from './map';
 
 const ESCAPE_REGEXP = /[-[\]/{}()*+?.\\^$|]/g;
 const CHINESE_REGEX =
@@ -199,12 +199,10 @@ export function regexpReplaceCustom(
       result += source.substring(lastIndex, matchMain.index) + ignoreResult;
       lastIndex = rule.lastIndex;
       if (ignoreResult.length !== lastIndex - matchMain.index) {
-        mapping.appendMap(
-          new StepMap([
-            mapping.map(matchMain.index),
-            lastIndex - matchMain.index,
-            ignoreResult.length,
-          ])
+        mapping.insertMap(
+          matchMain.index,
+          lastIndex - matchMain.index,
+          ignoreResult.length
         );
       }
     } else {

@@ -411,16 +411,16 @@ describe('mapping', () => {
   it('should produce an empty mapping for latin script', async () => {
     const input = 'This is English';
     const mapping = (await baseTransliterate(input)).mapping;
-    expect(mapping.maps).toHaveLength(0);
-    expect(mapping.map(0)).toBe(0);
-    expect(mapping.map(input.length - 1)).toBe(input.length - 1);
+
+    expect(mapping.cursor().map(0)).toBe(0);
+    expect(mapping.cursor().map(input.length - 1)).toBe(input.length - 1);
   });
 
   it('should produce a correct mapping for non-latin script', async () => {
     const input = 'сидя под дубом';
     const mapping = (await baseTransliterate(input)).mapping;
-    expect(mapping.map(0)).toBe(0);
-    expect(mapping.map(input.length)).toBe(15);
+    expect(mapping.cursor().map(0)).toBe(0);
+    expect(mapping.cursor().map(input.length)).toBe(15);
   });
 
   it('should produce a correct mapping for Japanese', async () => {
@@ -428,10 +428,10 @@ describe('mapping', () => {
     const { mapping } = await baseTransliterate(input, {
       locale: new Intl.Locale('ja'),
     });
-    expect(mapping.map(0)).toBe(0);
-    expect(mapping.map(3)).toBe(4);
-    expect(mapping.map(4)).toBe(7);
-    expect(mapping.map(13)).toBe(31);
+    expect(mapping.cursor().map(0)).toBe(0);
+    expect(mapping.cursor().map(3)).toBe(4);
+    expect(mapping.cursor().map(4)).toBe(7);
+    expect(mapping.cursor().map(13)).toBe(31);
   });
 
   it('should produce a correct mapping for Chinese', async () => {
@@ -439,16 +439,28 @@ describe('mapping', () => {
     const { mapping } = await baseTransliterate(input, {
       locale: new Intl.Locale('zh-CN'),
     });
-    expect(mapping.map(0)).toBe(0);
-    expect(mapping.map(2)).toBe(8);
-    expect(mapping.map(3)).toBe(12);
-    expect(mapping.map(15)).toBe(50);
+    expect(mapping.cursor().map(0)).toBe(0);
+    expect(mapping.cursor().map(2)).toBe(8);
+    expect(mapping.cursor().map(3)).toBe(12);
+    expect(mapping.cursor().map(15)).toBe(50);
   });
 
   it('should produce a correct mapping for surrogate pairs', async () => {
     const input = '\uD840\uDC00';
     const { mapping } = await baseTransliterate(input);
-    expect(mapping.map(0)).toBe(0);
-    expect(mapping.map(input.length)).toBe(0);
+    expect(mapping.cursor().map(0)).toBe(0);
+    expect(mapping.cursor().map(input.length)).toBe(0);
+  });
+
+  it('map positions across a replace+transliterate pipeline', async () => {
+    const t = new Transliterate();
+    const input = 'Aя'; // orig: idx0='A', idx1='я', len=2
+    const { mapping } = await t.transliterate(input, {
+      replace: [['A', 'AAA']],
+    });
+
+    expect(mapping.cursor().map(0)).toBe(0);
+    expect(mapping.cursor().map(1)).toBe(3);
+    expect(mapping.cursor().map(2)).toBe(5);
   });
 });

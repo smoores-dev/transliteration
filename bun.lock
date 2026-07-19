@@ -5,6 +5,7 @@
     "": {
       "name": "transliteration",
       "dependencies": {
+        "@storyteller-platform/mapping": "^0.1.1",
         "havarotjs": "^0.25.4",
         "kuroshiro-analyzer-kuromoji": "^1.1.0",
       },
@@ -172,6 +173,8 @@
     "@sindresorhus/merge-streams": ["@sindresorhus/merge-streams@2.3.0", "", {}, "sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg=="],
 
     "@standard-schema/spec": ["@standard-schema/spec@1.1.0", "", {}, "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="],
+
+    "@storyteller-platform/mapping": ["@storyteller-platform/mapping@0.1.1", "", {}, "sha512-8I1LiNJbSxZ2GoRv/+v4hvunkJ/i5pF8xw1i8YbFu8j4jwJV2r1byhrOvIoz0Ti6co6oput6x4m2TRtlcrRgVg=="],
 
     "@trpc/server": ["@trpc/server@11.8.0", "", { "peerDependencies": { "typescript": ">=5.7.2" } }, "sha512-DphyQnLuyX2nwJCQGWQ9zYz4hZGvRhSBqDhQ0SH3tDhQ3PU4u68xofA0pJ741Ir4InEAFD+TtJVLAQy+wVOkiQ=="],
 

@@ -1,3 +1,4 @@
+import { Mapping } from '@storyteller-platform/mapping';
 import { type Charmap, charmap } from '../../data/charmap';
 import { transliterate as zhTransliterate } from '../chinese/transliterate';
 import { transliterate as hebTransliterate } from '../hebrew/transliterate';
@@ -9,7 +10,6 @@ import type {
   OptionReplaceObject,
   OptionsTransliterate,
 } from '../types';
-import { Mapping, StepMap } from './map';
 
 import {
   deepClone,
@@ -146,7 +146,7 @@ export class Transliterate {
       }
       result += s;
       if (char.length !== s.length) {
-        mapping.appendMap(new StepMap([i, char.length, s.length]));
+        mapping.insertMap(i, char.length, s.length);
       }
       index += char.length;
       // If it's UTF-32 then skip next character

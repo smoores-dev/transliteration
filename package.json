@@ -66,6 +66,7 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
+    "@storyteller-platform/mapping": "^0.1.1",
     "havarotjs": "^0.25.4",
     "kuroshiro-analyzer-kuromoji": "^1.1.0"
   },

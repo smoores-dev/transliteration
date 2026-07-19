@@ -12,6 +12,9 @@ export type Token = {
   surface_form: string;
   reading: string;
   pronunciation: string;
+  verbose: {
+    word_position: number;
+  };
 };
 
 /**

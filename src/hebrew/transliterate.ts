@@ -1,8 +1,9 @@
 // biome-ignore-all lint: imported from hebrew-transliteration
+
+import { Mapping } from '@storyteller-platform/mapping';
 import { Text } from 'havarotjs';
 import { SylOpts } from 'havarotjs/text';
 import { Word } from 'havarotjs/word';
-import { Mapping, StepMap } from '../common/map';
 import { sylRules, wordRules } from './rules';
 import { sblSimple } from './sbl-simple';
 import { SBL, Schema } from './schema';
@@ -110,9 +111,10 @@ export const transliterate = (text: string | Text) => {
     ] as const;
   });
 
-  let i = 0;
+  let i = newText.words[0].whiteSpaceBefore?.length ?? 0;
   for (const [word, t] of transliterated) {
-    mapping.appendMap(new StepMap([i, word.original.length, t.length]));
+    mapping.insertMap(i, word.original.length, t.length);
+    i += word.original.length + (word.whiteSpaceAfter?.length ?? 0);
   }
 
   const result = transliterated.map(([_, t]) => t).join('');

@@ -1,8 +1,7 @@
 // biome-ignore-all lint: imported from kuroshiro
 
-import { Mapping, StepMap } from '../common/map';
+import { Mapping } from '@storyteller-platform/mapping';
 import {
-  getStrType,
   hasHiragana,
   hasJapanese,
   hasKana,
@@ -19,8 +18,6 @@ import {
   patchTokens,
   ROMANIZATION_SYSTEM,
   Token,
-  toRawHiragana,
-  toRawKatakana,
   toRawRomaji,
 } from './util';
 
@@ -103,12 +100,10 @@ class Kuroshiro {
       const romaji = toRawRomaji(preToken, ROMANIZATION_SYSTEM.HEPBURN);
       const space = i === tokens.length - 1 ? '' : ' ';
       if (token.surface_form.length !== romaji.length + space.length) {
-        mapping.appendMap(
-          new StepMap([
-            result.length,
-            token.surface_form.length,
-            romaji.length + space.length,
-          ])
+        mapping.insertMap(
+          token.verbose.word_position - 1,
+          token.surface_form.length,
+          romaji.length + space.length
         );
       }
       result += romaji + space;

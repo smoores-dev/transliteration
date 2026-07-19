@@ -1,6 +1,6 @@
 // biome-ignore-all lint: imported from pinyin
 
-import { Mapping, StepMap } from '../common/map';
+import { Mapping } from '@storyteller-platform/mapping';
 import { ENUM_PINYIN_MODE, ENUM_PINYIN_STYLE } from './constant';
 import CompoundSurnamePinyinData from './data/compound_surname';
 import DICT_ZI from './data/dict-zi'; // 单个汉字拼音数据。
@@ -121,12 +121,10 @@ export default class Pinyin {
 
       if (!words.isWordLike) {
         if (space.length) {
-          mapping.appendMap(
-            new StepMap([
-              result.length,
-              words.segment.length,
-              words.segment.length + space.length,
-            ])
+          mapping.insertMap(
+            words.index,
+            words.segment.length,
+            words.segment.length + space.length
           );
         }
         result += words.segment + space;
@@ -150,9 +148,7 @@ export default class Pinyin {
         const pyWords = newPys.map(([py]) => py);
         const pyStr = pyWords.join(' ') + space;
         if (pyStr.length !== words.segment.length) {
-          mapping.appendMap(
-            new StepMap([result.length, words.segment.length, pyStr.length])
-          );
+          mapping.insertMap(words.index, words.segment.length, pyStr.length);
         }
 
         result += pyStr;

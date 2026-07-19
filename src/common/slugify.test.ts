@@ -246,6 +246,6 @@ describe('mapping', () => {
       allowedChars: 'a-zA-Z',
     });
 
-    expect(mapping.map(6)).toBe(4);
+    expect(mapping.cursor().map(6)).toBe(4);
   });
 });

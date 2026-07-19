@@ -1,5 +1,5 @@
+import type { Mapping } from '@storyteller-platform/mapping';
 import type { OptionsSlugify } from '../types';
-import type { Mapping } from './map';
 import {
   defaultOptions as defaultOptionsTransliterate,
   Transliterate,

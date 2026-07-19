@@ -1,5 +1,5 @@
 // biome-ignore-all lint: imported from pinyin
-import { Mapping } from '../common/map';
+import { Mapping } from '@storyteller-platform/mapping';
 import { ENUM_PINYIN_MODE, ENUM_PINYIN_STYLE } from './constant';
 
 export interface IPinyin {
