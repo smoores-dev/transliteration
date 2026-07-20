@@ -107,8 +107,7 @@ class Kuroshiro {
         ? token.pronunciation || token.reading
         : token.surface_form;
       const romaji = toRawRomaji(preToken, ROMANIZATION_SYSTEM.HEPBURN);
-      const space =
-        isWordLike(token) && isWordLike(tokens[i + 1]) ? ' ' : '';
+      const space = isWordLike(token) && isWordLike(tokens[i + 1]) ? ' ' : '';
       if (token.surface_form.length !== romaji.length + space.length) {
         mapping.insertMap(
           token.verbose.word_position - 1,
