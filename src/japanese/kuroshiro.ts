@@ -106,8 +106,22 @@ class Kuroshiro {
       const preToken = hasJapanese(token.surface_form)
         ? token.pronunciation || token.reading
         : token.surface_form;
-      const romaji = toRawRomaji(preToken, ROMANIZATION_SYSTEM.HEPBURN);
-      const space = isWordLike(token) && isWordLike(tokens[i + 1]) ? ' ' : '';
+      // Strip any characters the romanizer couldn't convert (e.g. a kanji
+      // with no reading, which toRawRomaji returns unchanged). Left in, they
+      // survive into the output only to be deleted by slugify later, and that
+      // multi-token-spanning deletion corrupts the composed mapping's length.
+      const romaji = toRawRomaji(preToken, ROMANIZATION_SYSTEM.HEPBURN).replace(
+        /[^\x00-\x7F]/g,
+        ''
+      );
+      // Only insert a separating space when this token actually produced
+      // romaji and both it and the next token are word-like. A token that
+      // romanizes to nothing must not emit a trailing space, or it doubles the
+      // separator and corrupts the mapping.
+      const space =
+        romaji.length > 0 && isWordLike(token) && isWordLike(tokens[i + 1])
+          ? ' '
+          : '';
       if (token.surface_form.length !== romaji.length + space.length) {
         mapping.insertMap(
           token.verbose.word_position - 1,
