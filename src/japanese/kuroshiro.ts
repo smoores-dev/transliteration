@@ -92,13 +92,23 @@ class Kuroshiro {
 
     let result = '';
 
+    // A token is "word-like" if its surface contains a letter or number.
+    // Whitespace/punctuation tokens are separators and provide their own
+    // separation, so we only insert a separating space between two adjacent
+    // word-like tokens. Adding a space after every token (as before) doubled
+    // separators, which slugify's collapse stage then removed — corrupting the
+    // composed mapping's length for any text containing spaces or punctuation.
+    const isWordLike = (token: Token | undefined) =>
+      token != null && /[\p{L}\p{N}]/u.test(token.surface_form);
+
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
       const preToken = hasJapanese(token.surface_form)
         ? token.pronunciation || token.reading
         : token.surface_form;
       const romaji = toRawRomaji(preToken, ROMANIZATION_SYSTEM.HEPBURN);
-      const space = i === tokens.length - 1 ? '' : ' ';
+      const space =
+        isWordLike(token) && isWordLike(tokens[i + 1]) ? ' ' : '';
       if (token.surface_form.length !== romaji.length + space.length) {
         mapping.insertMap(
           token.verbose.word_position - 1,
