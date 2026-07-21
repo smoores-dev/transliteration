@@ -110,10 +110,19 @@ class Kuroshiro {
       // with no reading, which toRawRomaji returns unchanged). Left in, they
       // survive into the output only to be deleted by slugify later, and that
       // multi-token-spanning deletion corrupts the composed mapping's length.
-      const romaji = toRawRomaji(preToken, ROMANIZATION_SYSTEM.HEPBURN).replace(
+      let romaji = toRawRomaji(preToken, ROMANIZATION_SYSTEM.HEPBURN).replace(
         /[^\x00-\x7F]/g,
         ''
       );
+      // A separator token that romanizes to nothing (e.g. ・) must still
+      // separate its neighbors — emit a space for slugify to turn into a
+      // separator, otherwise the words on either side fuse together.
+      // Word-like tokens that romanize to nothing (e.g. a kanji with no
+      // reading) stay a clean deletion; their word-like neighbors already
+      // provide the separating space.
+      if (romaji.length === 0 && !isWordLike(token)) {
+        romaji = ' ';
+      }
       // Only insert a separating space when this token actually produced
       // romaji and both it and the next token are word-like. A token that
       // romanizes to nothing must not emit a trailing space, or it doubles the
