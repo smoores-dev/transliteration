@@ -134,7 +134,7 @@ describe('CLI transliterate', () => {
         projectRoot
       );
       unlinkSync(filename);
-      expect(stdout).toBe('\nNi Hao,Shi Jie!');
+      expect(stdout).toBe('Ni Hao,Shi Jie!\n');
     });
   });
 });
@@ -227,7 +227,7 @@ describe('CLI slugify', () => {
         projectRoot
       );
       unlinkSync(filename);
-      expect(stdout).toBe('\nni-hao-shi-jie');
+      expect(stdout).toBe('ni-hao-shi-jie\n');
     });
   });
 });
