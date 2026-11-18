@@ -1,4 +1,4 @@
-import { Mapping } from '@storyteller-platform/mapping';
+import { Mapping } from '@storyteller/mapping';
 import type { IntervalArray } from '../types';
 
 const ESCAPE_REGEXP = /[-[\]/{}()*+?.\\^$|]/g;

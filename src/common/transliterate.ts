@@ -1,4 +1,4 @@
-import { Mapping } from '@storyteller-platform/mapping';
+import { Mapping } from '@storyteller/mapping';
 import { type Charmap, charmap } from '../../data/charmap';
 import { transliterate as zhTransliterate } from '../chinese/transliterate';
 import { transliterate as hebTransliterate } from '../hebrew/transliterate';

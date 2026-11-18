@@ -1,6 +1,6 @@
 // biome-ignore-all lint: imported from kuroshiro
 
-import { Mapping } from '@storyteller-platform/mapping';
+import { Mapping } from '@storyteller/mapping';
 import {
   hasHiragana,
   hasJapanese,

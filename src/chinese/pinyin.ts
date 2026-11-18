@@ -1,6 +1,6 @@
 // biome-ignore-all lint: imported from pinyin
 
-import { Mapping } from '@storyteller-platform/mapping';
+import { Mapping } from '@storyteller/mapping';
 import { ENUM_PINYIN_MODE, ENUM_PINYIN_STYLE } from './constant';
 import CompoundSurnamePinyinData from './data/compound_surname';
 import DICT_ZI from './data/dict-zi'; // 单个汉字拼音数据。

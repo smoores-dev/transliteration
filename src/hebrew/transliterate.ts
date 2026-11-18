@@ -1,6 +1,6 @@
 // biome-ignore-all lint: imported from hebrew-transliteration
 
-import { Mapping } from '@storyteller-platform/mapping';
+import { Mapping } from '@storyteller/mapping';
 import { Text } from 'havarotjs';
 import { SylOpts } from 'havarotjs/text';
 import { Word } from 'havarotjs/word';
